@@ -32,11 +32,9 @@ namespace jaytwo.Http.Tests
             var response = await _httpClient.SendAsync(request =>
             {
                 request
-                    //.WithBasicAuthentication(user, pass)
+                    .WithBasicAuthentication(user, pass)
                     .WithMethod(HttpMethod.Get)
                     .WithUriPath($"/basic-auth/{user}/{pass}");
-
-                AuthenticationHttpRequestMessageExtensions.WithBasicAuthentication(request, user, pass);
             });
 
             using (response)
@@ -57,11 +55,9 @@ namespace jaytwo.Http.Tests
             var response = await _httpClient.SendAsync(request =>
             {
                 request
-                    //.WithBasicAuthentication(user, pass)
+                    .WithBasicAuthentication(user, pass)
                     .WithMethod(HttpMethod.Get)
                     .WithUriPath($"/hidden-basic-auth/{user}/{pass}");
-
-                AuthenticationHttpRequestMessageExtensions.WithBasicAuthentication(request, user, pass);
             });
 
             using (response)
@@ -81,11 +77,9 @@ namespace jaytwo.Http.Tests
             var response = await _httpClient.SendAsync(request =>
             {
                 request
-                    //.WithTokenAuthentication(token)
+                    .WithTokenAuthentication(token)
                     .WithMethod(HttpMethod.Get)
                     .WithUriPath($"/bearer");
-
-                AuthenticationHttpRequestMessageExtensions.WithTokenAuthentication(request, token);
             });
 
             using (response)

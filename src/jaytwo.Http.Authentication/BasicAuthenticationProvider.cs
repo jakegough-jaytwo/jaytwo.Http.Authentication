@@ -21,7 +21,7 @@ namespace jaytwo.Http.Authentication
             var bytes = Encoding.UTF8.GetBytes(combined);
             var base64 = Convert.ToBase64String(bytes);
 
-            SetAuthenticationHeader(request, "Basic", base64);
+            SetRequestAuthenticationHeader(request, "Basic", base64);
         }
     }
 }

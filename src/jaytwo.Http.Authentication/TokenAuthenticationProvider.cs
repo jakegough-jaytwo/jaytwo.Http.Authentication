@@ -32,7 +32,7 @@ namespace jaytwo.Http.Authentication
         public override async Task AuthenticateAsync(HttpRequestMessage request)
         {
             var token = await _tokenProvider.Invoke();
-            SetAuthenticationHeader(request, "Bearer", token);
+            SetRequestAuthenticationHeader(request, "Bearer", token);
         }
     }
 }

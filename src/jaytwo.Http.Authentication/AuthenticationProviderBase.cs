@@ -26,12 +26,12 @@ namespace jaytwo.Http.Authentication
             AuthenticateAsync(request).AwaitSynchronously();
         }
 
-        protected void SetAuthenticationHeader(HttpRequestMessage request, string headerValue)
+        protected void SetRequestAuthenticationHeader(HttpRequestMessage request, string headerValue)
         {
             request.Headers.Authorization = AuthenticationHeaderValue.Parse(headerValue);
         }
 
-        protected void SetAuthenticationHeader(HttpRequestMessage request, string scheme, string parameter)
+        protected void SetRequestAuthenticationHeader(HttpRequestMessage request, string scheme, string parameter)
         {
             request.Headers.Authorization = new AuthenticationHeaderValue(scheme, parameter);
         }

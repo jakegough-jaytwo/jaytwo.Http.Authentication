@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\jaytwo.Http.Authentication\jaytwo.Http.Authentication.csproj" />
+    <PackageReference Include="jaytwo.FluentHttp" Version="0.1.0-beta-20200703224605" />
   </ItemGroup>
 
   <!-- default test packages -->
