@@ -8,7 +8,7 @@ using jaytwo.FluentHttp;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace jaytwo.Http.Tests
+namespace jaytwo.Http.Authentication.Tests
 {
     public class HttpClientTests
     {
