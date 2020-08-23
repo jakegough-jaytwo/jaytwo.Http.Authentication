@@ -8,7 +8,7 @@ namespace jaytwo.FluentHttp
     {
         public static HttpMessageHandler WithAuthentication(this HttpMessageHandler innerHandler, IAuthenticationProvider authenticationProvider)
         {
-            return new AuthenticationDelegatingHandler(authenticationProvider, innerHandler);
+            return new AuthenticationHttpMessageHandler(authenticationProvider, innerHandler);
         }
 
         public static HttpMessageHandler WithBasicAuthentication(this HttpMessageHandler innerHandler, string user, string pass)

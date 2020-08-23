@@ -47,32 +47,6 @@ namespace jaytwo.Http.Authentication.Tests
         }
 
         [Fact]
-        public async Task HiddenBasicAuth_Works()
-        {
-            // arrange
-            var user = "hello";
-            var pass = "world";
-            var handler = new HttpClientHandler().WithBasicAuthentication(user, pass);
-
-            using (var client = GetHttpClient(handler))
-            {
-                // act
-                var response = await client.SendAsync(request =>
-                {
-                    request
-                        .WithMethod(HttpMethod.Get)
-                        .WithUriPath($"/hidden-basic-auth/{user}/{pass}");
-                });
-
-                using (response)
-                {
-                    // assert
-                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                }
-            }
-        }
-
-        [Fact]
         public async Task TokenAuth_Works()
         {
             // arrange
@@ -97,60 +71,9 @@ namespace jaytwo.Http.Authentication.Tests
             }
         }
 
-        [Fact]
-        public async Task TokenAuth_with_delegate_Works()
-        {
-            // arrange
-            var token = "hello";
-            var handler = new HttpClientHandler().WithTokenAuthentication(() => token);
-            var client = GetHttpClient(handler);
-
-            // act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath($"/bearer");
-            });
-
-            using (response)
-            {
-                // assert
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            }
-        }
-
-        [Fact]
-        public async Task TokenAuth_with_token_provider_Works()
-        {
-            // arrange
-            var token = "hello";
-
-            var mockTokenProvider = new Mock<ITokenProvider>();
-            mockTokenProvider.Setup(x => x.GetTokenAsync()).ReturnsAsync(token);
-
-            var handler = new HttpClientHandler().WithTokenAuthentication(mockTokenProvider.Object);
-            using (var client = GetHttpClient(handler))
-            {
-                // act
-                var response = await client.SendAsync(request =>
-                {
-                    request
-                        .WithMethod(HttpMethod.Get)
-                        .WithUriPath($"/bearer");
-                });
-
-                using (response)
-                {
-                    // assert
-                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                }
-            }
-        }
-
         private HttpClient GetHttpClient(HttpMessageHandler handler)
         {
-            return HttpClientFactory.Create(handler).WithBaseAddress("http://httpbin.org");
+            return new HttpClient(handler).WithBaseAddress("http://httpbin.org");
         }
     }
 }

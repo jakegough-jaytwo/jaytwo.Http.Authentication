@@ -9,17 +9,16 @@ using jaytwo.FluentHttp;
 
 namespace jaytwo.Http.Authentication
 {
-    public class AuthenticationDelegatingHandler : DelegatingHandler
+    public class AuthenticationHttpMessageHandler : DelegatingHandler
     {
         private readonly IAuthenticationProvider _authenticationProvider;
 
-        public AuthenticationDelegatingHandler(IAuthenticationProvider authenticationProvider)
-            : base()
+        public AuthenticationHttpMessageHandler(IAuthenticationProvider authenticationProvider)
+            : this(authenticationProvider, new HttpClientHandler())
         {
-            _authenticationProvider = authenticationProvider;
         }
 
-        public AuthenticationDelegatingHandler(IAuthenticationProvider authenticationProvider, HttpMessageHandler innerHandler)
+        public AuthenticationHttpMessageHandler(IAuthenticationProvider authenticationProvider, HttpMessageHandler innerHandler)
             : base(innerHandler)
         {
             _authenticationProvider = authenticationProvider;

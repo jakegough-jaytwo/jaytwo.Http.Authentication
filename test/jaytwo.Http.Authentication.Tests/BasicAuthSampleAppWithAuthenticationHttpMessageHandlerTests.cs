@@ -9,11 +9,11 @@ using Xunit;
 
 namespace jaytwo.Http.Authentication.Tests
 {
-    public class TokenAuthSampleAppWithAuthenticationDelegatingHandlerTests : IClassFixture<TokenAuthSampleAppWebApplicationFactory>
+    public class BasicAuthSampleAppWithAuthenticationHttpMessageHandlerTests : IClassFixture<BasicAuthSampleAppWebApplicationFactory>
     {
-        private readonly TokenAuthSampleAppWebApplicationFactory _fixture;
+        private readonly BasicAuthSampleAppWebApplicationFactory _fixture;
 
-        public TokenAuthSampleAppWithAuthenticationDelegatingHandlerTests(TokenAuthSampleAppWebApplicationFactory fixture)
+        public BasicAuthSampleAppWithAuthenticationHttpMessageHandlerTests(BasicAuthSampleAppWebApplicationFactory fixture)
         {
             _fixture = fixture;
         }
@@ -22,8 +22,8 @@ namespace jaytwo.Http.Authentication.Tests
         public async Task GetSecure_ReturnsUnauthorizedWithIncorrectCredentials()
         {
             // Arrange
-            var handler = new AuthenticationDelegatingHandler(new TokenAuthenticationProvider("noway"));
-            var client = _fixture.CreateDefaultClient(handler);
+            var handler = _fixture.Server.CreateHandler().WithBasicAuthentication("noUser", "noPassword");
+            var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
 
             // Act
             var response = await client.SendAsync(request =>
@@ -41,11 +41,11 @@ namespace jaytwo.Http.Authentication.Tests
         }
 
         [Fact]
-        public async Task GetSecure_ReturnsOkWithTokenAuthCredentials()
+        public async Task GetSecure_ReturnsOkWithBasicAuthCredentials()
         {
             // Arrange
-            var handler = new AuthenticationDelegatingHandler(new TokenAuthenticationProvider("helloworld"));
-            var client = _fixture.CreateDefaultClient(handler);
+            var handler = _fixture.Server.CreateHandler().WithBasicAuthentication("hello", "world");
+            var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
 
             // Act
             var response = await client.SendAsync(request =>
@@ -61,7 +61,7 @@ namespace jaytwo.Http.Authentication.Tests
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync();
-                Assert.Equal("Welcome to the token auth secured area.", content);
+                Assert.Equal("Welcome to the basic auth secured area.", content);
             }
         }
     }
