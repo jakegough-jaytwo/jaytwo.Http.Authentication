@@ -14,8 +14,9 @@ namespace jaytwo.Http.Authentication
         private readonly IAuthenticationProvider _authenticationProvider;
 
         public AuthenticationHttpMessageHandler(IAuthenticationProvider authenticationProvider)
-            : this(authenticationProvider, new HttpClientHandler())
+            : base()
         {
+            _authenticationProvider = authenticationProvider;
         }
 
         public AuthenticationHttpMessageHandler(IAuthenticationProvider authenticationProvider, HttpMessageHandler innerHandler)
