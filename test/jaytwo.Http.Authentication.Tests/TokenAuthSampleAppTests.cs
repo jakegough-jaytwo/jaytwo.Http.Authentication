@@ -4,110 +4,86 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using jaytwo.FluentHttp;
 using Xunit;
 
-namespace jaytwo.Http.Authentication.Tests
+namespace jaytwo.Http.Authentication.Tests;
+
+public class TokenAuthSampleAppTests : IClassFixture<TokenAuthSampleAppWebApplicationFactory>
 {
-    public class TokenAuthSampleAppTests : IClassFixture<TokenAuthSampleAppWebApplicationFactory>
+    private readonly TokenAuthSampleAppWebApplicationFactory _fixture;
+
+    public TokenAuthSampleAppTests(TokenAuthSampleAppWebApplicationFactory fixture)
     {
-        private readonly TokenAuthSampleAppWebApplicationFactory _fixture;
+        _fixture = fixture;
+    }
 
-        public TokenAuthSampleAppTests(TokenAuthSampleAppWebApplicationFactory fixture)
-        {
-            _fixture = fixture;
-        }
+    [Fact]
+    public async Task GetHome_ReturnsOkWithoutTokenAuthenticationProvider()
+    {
+        // Arrange
+        using var client = _fixture.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/home", UriKind.Relative));
 
-        [Fact]
-        public async Task GetHome_ReturnsOkWithoutTokenAuthenticationProvider()
-        {
-            // Arrange
-            var client = _fixture.CreateClient();
+        // Act
+        using var response = await client.SendAsync(request);
 
-            // Act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath("/home");
-            });
+        // Assert
+        response.EnsureSuccessStatusCode();
 
-            // Assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("Welcome to the public insecure area.", content);
+    }
 
-                var content = await response.Content.ReadAsStringAsync();
-                Assert.Equal("Welcome to the public insecure area.", content);
-            }
-        }
+    [Fact]
+    public async Task GetSecure_ReturnsUnauthorizedWithoutTokenAuth()
+    {
+        // Arrange
+        using var client = _fixture.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
-        [Fact]
-        public async Task GetSecure_ReturnsUnauthorizedWithoutTokenAuth()
-        {
-            // Arrange
-            var client = _fixture.CreateClient();
+        // Act
+        using var response = await client.SendAsync(request);
 
-            // Act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath("/secure");
-            });
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
 
-            // Assert
-            using (response)
-            {
-                Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-            }
-        }
+    [Fact]
+    public async Task GetSecure_ReturnsUnauthorizedWithIncorrectCredentials()
+    {
+        // Arrange
+        using var handler = new AuthenticationHttpMessageHandler(
+            new TokenAuthenticationProvider("noway"),
+            _fixture.Server.CreateHandler());
 
-        [Fact]
-        public async Task GetSecure_ReturnsUnauthorizedWithIncorrectCredentials()
-        {
-            // Arrange
-            var client = _fixture.CreateClient();
+        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
-            // Act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath("/secure")
-                    .WithTokenAuthentication("noway");
-            });
+        // Act
+        using var response = await client.SendAsync(request);
 
-            // Assert
-            using (response)
-            {
-                Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-            }
-        }
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task GetSecure_ReturnsOkWithTokenAuthCredentials()
-        {
-            // Arrange
-            var client = _fixture.CreateClient();
+    [Fact]
+    public async Task GetSecure_ReturnsOkWithTokenAuthCredentials()
+    {
+        // Arrange
+        using var handler = new AuthenticationHttpMessageHandler(
+            new TokenAuthenticationProvider("helloworld"),
+            _fixture.Server.CreateHandler());
 
-            // Act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath("/secure")
-                    .WithTokenAuthentication("helloworld");
-            });
+        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
-            // Assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
+        // Act
+        using var response = await client.SendAsync(request);
 
-                var content = await response.Content.ReadAsStringAsync();
-                Assert.Equal("Welcome to the token auth secured area.", content);
-            }
-        }
+        // Assert
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("Welcome to the token auth secured area.", content);
     }
 }

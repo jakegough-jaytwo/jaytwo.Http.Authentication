@@ -5,30 +5,22 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using jaytwo.FluentHttp;
 
-namespace jaytwo.Http.Authentication
+namespace jaytwo.Http.Authentication;
+
+public class AuthenticationHttpMessageHandler : DelegatingHandler
 {
-    public class AuthenticationHttpMessageHandler : DelegatingHandler
+    private readonly IAuthenticationProvider _authenticationProvider;
+
+    public AuthenticationHttpMessageHandler(IAuthenticationProvider authenticationProvider, HttpMessageHandler innerHandler)
+        : base(innerHandler)
     {
-        private readonly IAuthenticationProvider _authenticationProvider;
+        _authenticationProvider = authenticationProvider;
+    }
 
-        public AuthenticationHttpMessageHandler(IAuthenticationProvider authenticationProvider)
-            : base()
-        {
-            _authenticationProvider = authenticationProvider;
-        }
-
-        public AuthenticationHttpMessageHandler(IAuthenticationProvider authenticationProvider, HttpMessageHandler innerHandler)
-            : base(innerHandler)
-        {
-            _authenticationProvider = authenticationProvider;
-        }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            request.WithAuthentication(_authenticationProvider);
-            return base.SendAsync(request, cancellationToken);
-        }
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        await _authenticationProvider.AuthenticateAsync(request);
+        return await base.SendAsync(request, cancellationToken);
     }
 }

@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\jaytwo.Http.Authentication\jaytwo.Http.Authentication.csproj" />
     <ProjectReference Include="..\BasicAuthSampleApp\BasicAuthSampleApp.csproj" />
     <ProjectReference Include="..\TokenAuthSampleApp\TokenAuthSampleApp.csproj" />
-    <PackageReference Include="jaytwo.FluentHttp" Version="0.1.0-beta-20200703224605" />
   </ItemGroup>
 
   <ItemGroup>

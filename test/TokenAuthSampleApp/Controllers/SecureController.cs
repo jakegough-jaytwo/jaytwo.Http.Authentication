@@ -6,21 +6,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace TokenAuthSampleApp.Controllers
-{
-    [ApiController]
-    [Route("[controller]")]
-    [Authorize(AuthenticationSchemes = "Token")]
-    public class SecureController : ControllerBase
-    {
-        public SecureController()
-        {
-        }
+namespace TokenAuthSampleApp.Controllers;
 
-        [HttpGet]
-        public string Get()
-        {
-            return "Welcome to the token auth secured area.";
-        }
+[ApiController]
+[Route("[controller]")]
+[Authorize(AuthenticationSchemes = "Token")]
+public class SecureController : ControllerBase
+{
+    public SecureController()
+    {
+    }
+
+    [HttpGet]
+    public string Get()
+    {
+        return "Welcome to the token auth secured area.";
     }
 }

@@ -2,12 +2,9 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace jaytwo.Http.Authentication
-{
-    public interface IAuthenticationProvider
-    {
-        Task AuthenticateAsync(HttpRequestMessage request);
+namespace jaytwo.Http.Authentication;
 
-        void Authenticate(HttpRequestMessage request);
-    }
+public interface IAuthenticationProvider
+{
+    Task AuthenticateAsync(HttpRequestMessage request);
 }

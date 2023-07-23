@@ -5,15 +5,14 @@ using jaytwo.SolutionResolution;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace jaytwo.Http.Authentication.Tests
+namespace jaytwo.Http.Authentication.Tests;
+
+public class TokenAuthSampleAppWebApplicationFactory
+    : WebApplicationFactory<TokenAuthSampleApp.Startup>
 {
-    public class TokenAuthSampleAppWebApplicationFactory
-        : WebApplicationFactory<TokenAuthSampleApp.Startup>
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            var contentRoot = new SlnFileResolver().ResolvePathRelativeToSln("test/TokenAuthSampleApp");
-            builder.UseContentRoot(contentRoot);
-        }
+        var contentRoot = new SlnFileResolver().ResolvePathRelativeToSln("test/TokenAuthSampleApp");
+        builder.UseContentRoot(contentRoot);
     }
 }

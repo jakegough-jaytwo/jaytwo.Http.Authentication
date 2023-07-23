@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
 
-namespace jaytwo.Http.Authentication
+namespace jaytwo.Http.Authentication;
+
+public interface ITokenProvider
 {
-    public interface ITokenProvider
-    {
-        Task<string> GetTokenAsync();
-    }
+    Task<string> GetTokenAsync();
 }
