@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using jaytwo.FluentHttp;
 using Xunit;
 
 namespace jaytwo.Http.Authentication.Tests;
@@ -22,45 +21,31 @@ public class BasicAuthSampleAppTests : IClassFixture<BasicAuthSampleAppWebApplic
     public async Task GetHome_ReturnsOkWithoutBasicAuthenticationProvider()
     {
         // Arrange
-        var client = _fixture.CreateClient();
+        using var client = _fixture.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/home", UriKind.Relative));
 
         // Act
-        var response = await client.SendAsync(request =>
-        {
-            request
-                .WithMethod(HttpMethod.Get)
-                .WithUriPath("/home");
-        });
+        using var response = await client.SendAsync(request);
 
         // Assert
-        using (response)
-        {
-            response.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
 
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Equal("Welcome to the public insecure area.", content);
-        }
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("Welcome to the public insecure area.", content);
     }
 
     [Fact]
     public async Task GetSecure_ReturnsUnauthorizedWithoutBasicAuth()
     {
         // Arrange
-        var client = _fixture.CreateClient();
+        using var client = _fixture.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act
-        var response = await client.SendAsync(request =>
-        {
-            request
-                .WithMethod(HttpMethod.Get)
-                .WithUriPath("/secure");
-        });
+        using var response = await client.SendAsync(request);
 
         // Assert
-        using (response)
-        {
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -68,22 +53,15 @@ public class BasicAuthSampleAppTests : IClassFixture<BasicAuthSampleAppWebApplic
     {
         // Arrange
         var auth = new BasicAuthenticationProvider("noUser", "noPassword");
-        var handler = new AuthenticationHttpMessageHandler(auth, _fixture.Server.CreateHandler());
-        var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var handler = new AuthenticationHttpMessageHandler(auth, _fixture.Server.CreateHandler());
+        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act
-        var response = await client.SendAsync(request =>
-        {
-            request
-                .WithMethod(HttpMethod.Get)
-                .WithUriPath("/secure");
-        });
+        using var response = await client.SendAsync(request);
 
         // Assert
-        using (response)
-        {
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -91,24 +69,17 @@ public class BasicAuthSampleAppTests : IClassFixture<BasicAuthSampleAppWebApplic
     {
         // Arrange
         var auth = new BasicAuthenticationProvider("hello", "world");
-        var handler = new AuthenticationHttpMessageHandler(auth, _fixture.Server.CreateHandler());
-        var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var handler = new AuthenticationHttpMessageHandler(auth, _fixture.Server.CreateHandler());
+        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act
-        var response = await client.SendAsync(request =>
-        {
-            request
-                .WithMethod(HttpMethod.Get)
-                .WithUriPath("/secure");
-        });
+        using var response = await client.SendAsync(request);
 
         // Assert
-        using (response)
-        {
-            response.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
 
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Equal("Welcome to the basic auth secured area.", content);
-        }
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("Welcome to the basic auth secured area.", content);
     }
 }

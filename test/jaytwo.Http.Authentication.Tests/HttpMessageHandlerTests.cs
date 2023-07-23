@@ -4,8 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using jaytwo.FluentHttp;
-using Moq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -33,22 +31,14 @@ public class HttpMessageHandlerTests
             new BasicAuthenticationProvider(user, pass),
             new HttpClientHandler());
 
-        using (var client = GetHttpClient(handler))
-        {
-            // act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath($"/basic-auth/{user}/{pass}");
-            });
+        using var client = new HttpClient(handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(HttpBinUrl + $"/basic-auth/{user}/{pass}"));
 
-            using (response)
-            {
-                // assert
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            }
-        }
+        // act
+        using var response = await client.SendAsync(request);
+
+        // assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
@@ -60,26 +50,13 @@ public class HttpMessageHandlerTests
             new TokenAuthenticationProvider(token),
             new HttpClientHandler());
 
-        using (var client = GetHttpClient(handler))
-        {
-            // act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath($"/bearer");
-            });
+        using var client = new HttpClient(handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(HttpBinUrl + "/bearer"));
 
-            using (response)
-            {
-                // assert
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            }
-        }
-    }
+        // act
+        using var response = await client.SendAsync(request);
 
-    private HttpClient GetHttpClient(HttpMessageHandler handler)
-    {
-        return new HttpClient(handler).WithBaseAddress(HttpBinUrl);
+        // assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }

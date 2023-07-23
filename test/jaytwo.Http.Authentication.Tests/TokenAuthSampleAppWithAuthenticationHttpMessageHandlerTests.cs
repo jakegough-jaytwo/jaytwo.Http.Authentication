@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using jaytwo.FluentHttp;
 using Moq;
 using Xunit;
 
@@ -25,23 +24,14 @@ public class TokenAuthSampleAppWithAuthenticationHttpMessageHandlerTests : IClas
         // Arrange
         var auth = new TokenAuthenticationProvider("noway");
         using var handler = new AuthenticationHttpMessageHandler(auth, _fixture.Server.CreateHandler());
+        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
-        using (var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler))
-        {
-            // Act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath("/secure");
-            });
+        // Act
+        using var response = await client.SendAsync(request);
 
-            // Assert
-            using (response)
-            {
-                Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-            }
-        }
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -50,26 +40,17 @@ public class TokenAuthSampleAppWithAuthenticationHttpMessageHandlerTests : IClas
         // Arrange
         var auth = new TokenAuthenticationProvider("helloworld");
         using var handler = new AuthenticationHttpMessageHandler(auth, _fixture.Server.CreateHandler());
+        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
-        using (var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler))
-        {
-            // Act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath("/secure");
-            });
+        // Act
+        using var response = await client.SendAsync(request);
 
-            // Assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
+        // Assert
+        response.EnsureSuccessStatusCode();
 
-                var content = await response.Content.ReadAsStringAsync();
-                Assert.Equal("Welcome to the token auth secured area.", content);
-            }
-        }
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("Welcome to the token auth secured area.", content);
     }
 
     [Fact]
@@ -77,28 +58,18 @@ public class TokenAuthSampleAppWithAuthenticationHttpMessageHandlerTests : IClas
     {
         // Arrange
         var auth = new TokenAuthenticationProvider("helloworld");
-
         var handler = new AuthenticationHttpMessageHandler(auth, _fixture.Server.CreateHandler());
+        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
-        using (var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler))
-        {
-            // Act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath("/secure");
-            });
+        // Act
+        using var response = await client.SendAsync(request);
 
-            // Assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
+        // Assert
+        response.EnsureSuccessStatusCode();
 
-                var content = await response.Content.ReadAsStringAsync();
-                Assert.Equal("Welcome to the token auth secured area.", content);
-            }
-        }
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("Welcome to the token auth secured area.", content);
     }
 
     [Fact]
@@ -112,24 +83,16 @@ public class TokenAuthSampleAppWithAuthenticationHttpMessageHandlerTests : IClas
             new TokenAuthenticationProvider(mockTokenProvider.Object),
             _fixture.Server.CreateHandler());
 
-        using (var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler))
-        {
-            // Act
-            var response = await client.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath("/secure");
-            });
+        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
-            // Assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
+        // Act
+        using var response = await client.SendAsync(request);
 
-                var content = await response.Content.ReadAsStringAsync();
-                Assert.Equal("Welcome to the token auth secured area.", content);
-            }
-        }
+        // Assert
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("Welcome to the token auth secured area.", content);
     }
 }
