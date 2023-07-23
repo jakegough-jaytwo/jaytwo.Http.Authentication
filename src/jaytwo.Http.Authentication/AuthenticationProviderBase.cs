@@ -7,8 +7,6 @@ namespace jaytwo.Http.Authentication;
 
 public abstract class AuthenticationProviderBase : IAuthenticationProvider
 {
-    // override either of these methods, but don't do both
-
     public virtual Task AuthenticateAsync(HttpRequestMessage request)
     {
         return Task.CompletedTask;
