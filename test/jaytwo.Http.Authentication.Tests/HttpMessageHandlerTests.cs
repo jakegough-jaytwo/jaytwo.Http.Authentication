@@ -9,71 +9,77 @@ using Moq;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace jaytwo.Http.Authentication.Tests
+namespace jaytwo.Http.Authentication.Tests;
+
+public class HttpMessageHandlerTests
 {
-    public class HttpMessageHandlerTests
+    public const string HttpBinUrl = "http://httpbin.jaytwo.com/";
+
+    private readonly ITestOutputHelper _output;
+
+    public HttpMessageHandlerTests(ITestOutputHelper output)
     {
-        private readonly ITestOutputHelper _output;
+        _output = output;
+    }
 
-        public HttpMessageHandlerTests(ITestOutputHelper output)
+    [Fact]
+    public async Task BasicAuth_Works()
+    {
+        // arrange
+        var user = "hello";
+        var pass = "world";
+
+        using var handler = new AuthenticationHttpMessageHandler(
+            new BasicAuthenticationProvider(user, pass),
+            new HttpClientHandler());
+
+        using (var client = GetHttpClient(handler))
         {
-            _output = output;
-        }
-
-        [Fact]
-        public async Task BasicAuth_Works()
-        {
-            // arrange
-            var user = "hello";
-            var pass = "world";
-            var handler = new HttpClientHandler().WithBasicAuthentication(user, pass);
-
-            using (var client = GetHttpClient(handler))
+            // act
+            var response = await client.SendAsync(request =>
             {
-                // act
-                var response = await client.SendAsync(request =>
-                {
-                    request
-                        .WithMethod(HttpMethod.Get)
-                        .WithUriPath($"/basic-auth/{user}/{pass}");
-                });
+                request
+                    .WithMethod(HttpMethod.Get)
+                    .WithUriPath($"/basic-auth/{user}/{pass}");
+            });
 
-                using (response)
-                {
-                    // assert
-                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                }
+            using (response)
+            {
+                // assert
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
         }
+    }
 
-        [Fact]
-        public async Task TokenAuth_Works()
+    [Fact]
+    public async Task TokenAuth_Works()
+    {
+        // arrange
+        var token = "hello";
+        using var handler = new AuthenticationHttpMessageHandler(
+            new TokenAuthenticationProvider(token),
+            new HttpClientHandler());
+
+        using (var client = GetHttpClient(handler))
         {
-            // arrange
-            var token = "hello";
-            var handler = new HttpClientHandler().WithTokenAuthentication(token);
-
-            using (var client = GetHttpClient(handler))
+            // act
+            var response = await client.SendAsync(request =>
             {
-                // act
-                var response = await client.SendAsync(request =>
-                {
-                    request
-                        .WithMethod(HttpMethod.Get)
-                        .WithUriPath($"/bearer");
-                });
+                request
+                    .WithMethod(HttpMethod.Get)
+                    .WithUriPath($"/bearer");
+            });
 
-                using (response)
-                {
-                    // assert
-                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                }
+            using (response)
+            {
+                // assert
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
         }
+    }
 
-        private HttpClient GetHttpClient(HttpMessageHandler handler)
-        {
-            return new HttpClient(handler).WithBaseAddress("http://httpbin.org");
-        }
+    private HttpClient GetHttpClient(HttpMessageHandler handler)
+    {
+        return new HttpClient(handler).WithBaseAddress(HttpBinUrl);
     }
 }
