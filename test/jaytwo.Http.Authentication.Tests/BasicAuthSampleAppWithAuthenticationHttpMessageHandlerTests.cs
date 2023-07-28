@@ -8,24 +8,21 @@ using Xunit;
 
 namespace jaytwo.Http.Authentication.Tests;
 
-public class BasicAuthSampleAppWithAuthenticationHttpMessageHandlerTests : IClassFixture<BasicAuthSampleAppWebApplicationFactory>
+public class BasicAuthSampleAppWithAuthenticationHttpMessageHandlerTests : IClassFixture<AuthenticationTestFixture>
 {
-    private readonly BasicAuthSampleAppWebApplicationFactory _fixture;
+    private readonly IHttpClient _client;
 
-    public BasicAuthSampleAppWithAuthenticationHttpMessageHandlerTests(BasicAuthSampleAppWebApplicationFactory fixture)
+    public BasicAuthSampleAppWithAuthenticationHttpMessageHandlerTests(AuthenticationTestFixture fixture)
     {
-        _fixture = fixture;
+        _client = fixture.CreateBasicAuthSampleAppHttpClient();
     }
 
     [Fact]
     public async Task GetSecure_ReturnsUnauthorizedWithIncorrectCredentials()
     {
         // Arrange
-        using var handler = new AuthenticationHttpMessageHandler(
-            new BasicAuthenticationProvider("noUser", "noPassword"),
-            _fixture.Server.CreateHandler());
-
-        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        var auth = new BasicAuthenticationProvider("noUser", "noPassword");
+        using var client = _client.WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act
@@ -39,11 +36,8 @@ public class BasicAuthSampleAppWithAuthenticationHttpMessageHandlerTests : IClas
     public async Task GetSecure_ReturnsOkWithBasicAuthCredentials()
     {
         // Arrange
-        using var handler = new AuthenticationHttpMessageHandler(
-            new BasicAuthenticationProvider("hello", "world"),
-            _fixture.Server.CreateHandler());
-
-        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        var auth = new BasicAuthenticationProvider("hello", "world");
+        using var client = _client.WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act

@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace jaytwo.Http.Authentication.Tests;
 
-public class BasicAuthSampleAppWebApplicationFactory
-    : WebApplicationFactory<BasicAuthSampleApp.Startup>
+public class BearerAuthSampleAppWebApplicationFactory
+    : WebApplicationFactory<BearerAuthSampleApp.Startup>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        var contentRoot = new SlnFileResolver().ResolvePathRelativeToSln("test/BasicAuthSampleApp");
+        var contentRoot = new SlnFileResolver().ResolvePathRelativeToSln("test/BearerAuthSampleApp");
         builder.UseContentRoot(contentRoot);
     }
 }

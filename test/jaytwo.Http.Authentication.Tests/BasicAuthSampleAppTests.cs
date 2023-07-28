@@ -8,20 +8,20 @@ using Xunit;
 
 namespace jaytwo.Http.Authentication.Tests;
 
-public class BasicAuthSampleAppTests : IClassFixture<BasicAuthSampleAppWebApplicationFactory>
+public class BasicAuthSampleAppTests : IClassFixture<AuthenticationTestFixture>
 {
-    private readonly BasicAuthSampleAppWebApplicationFactory _fixture;
+    private readonly IHttpClient _client;
 
-    public BasicAuthSampleAppTests(BasicAuthSampleAppWebApplicationFactory fixture)
+    public BasicAuthSampleAppTests(AuthenticationTestFixture fixture)
     {
-        _fixture = fixture;
+        _client = fixture.CreateBasicAuthSampleAppHttpClient();
     }
 
     [Fact]
     public async Task GetHome_ReturnsOkWithoutBasicAuthenticationProvider()
     {
         // Arrange
-        using var client = _fixture.CreateClient();
+        var client = _client;
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/home", UriKind.Relative));
 
         // Act
@@ -38,7 +38,7 @@ public class BasicAuthSampleAppTests : IClassFixture<BasicAuthSampleAppWebApplic
     public async Task GetSecure_ReturnsUnauthorizedWithoutBasicAuth()
     {
         // Arrange
-        using var client = _fixture.CreateClient();
+        var client = _client;
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act
@@ -53,8 +53,7 @@ public class BasicAuthSampleAppTests : IClassFixture<BasicAuthSampleAppWebApplic
     {
         // Arrange
         var auth = new BasicAuthenticationProvider("noUser", "noPassword");
-        using var handler = new AuthenticationHttpMessageHandler(auth, _fixture.Server.CreateHandler());
-        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var client = _client.WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act
@@ -69,8 +68,7 @@ public class BasicAuthSampleAppTests : IClassFixture<BasicAuthSampleAppWebApplic
     {
         // Arrange
         var auth = new BasicAuthenticationProvider("hello", "world");
-        using var handler = new AuthenticationHttpMessageHandler(auth, _fixture.Server.CreateHandler());
-        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        using var client = _client.WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act

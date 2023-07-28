@@ -31,8 +31,7 @@ public class HttpClientTests
         var pass = "world";
 
         var auth = new BasicAuthenticationProvider(user, pass);
-        using var handler = new AuthenticationHttpMessageHandler(auth, new SocketsHttpHandler());
-        using var client = new HttpClient(handler);
+        using var client = new HttpClient().Wrap().WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(HttpBinUrl + $"basic-auth/{user}/{pass}"));
 
         // act
@@ -50,8 +49,7 @@ public class HttpClientTests
         var pass = "world";
 
         var auth = new BasicAuthenticationProvider(user, pass);
-        using var handler = new AuthenticationHttpMessageHandler(auth, new SocketsHttpHandler());
-        using var client = new HttpClient(handler);
+        using var client = new HttpClient().Wrap().WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(HttpBinUrl + $"hidden-basic-auth/{user}/{pass}"));
 
         // act
@@ -62,13 +60,12 @@ public class HttpClientTests
     }
 
     [Fact]
-    public async Task TokenAuth_Works()
+    public async Task BearerAuth_Works()
     {
         // arrange
         var token = "hello";
-        var auth = new TokenAuthenticationProvider(token);
-        using var handler = new AuthenticationHttpMessageHandler(auth, new SocketsHttpHandler());
-        using var client = new HttpClient(handler);
+        var auth = new BearerAuthenticationProvider(token);
+        using var client = new HttpClient().Wrap().WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(HttpBinUrl + $"bearer"));
 
         // act

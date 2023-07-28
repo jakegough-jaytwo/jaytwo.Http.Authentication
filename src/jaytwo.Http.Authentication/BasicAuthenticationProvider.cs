@@ -1,24 +1,27 @@
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace jaytwo.Http.Authentication;
 
 public class BasicAuthenticationProvider : AuthenticationProviderBase, IAuthenticationProvider
 {
-    private readonly string _user;
-    private readonly string _pass;
-
     public BasicAuthenticationProvider(string user, string pass)
     {
-        _user = user;
-        _pass = pass;
+        User = user;
+        Password = pass;
     }
 
-    public override Task AuthenticateAsync(HttpRequestMessage request)
+    protected internal string User { get; private set; }
+
+    protected internal string Password { get; private set; }
+
+    public override Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var combined = $"{_user}:{_pass}";
+        var combined = $"{User}:{Password}";
         var bytes = Encoding.UTF8.GetBytes(combined);
         var base64 = Convert.ToBase64String(bytes);
 

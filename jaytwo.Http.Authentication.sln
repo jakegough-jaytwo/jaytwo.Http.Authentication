@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30204.135
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B1C9BB90-7175-477D-85AA-C4E9B1246868}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jaytwo.Http.Authentication.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicAuthSampleApp", "test\BasicAuthSampleApp\BasicAuthSampleApp.csproj", "{19FAEB88-FC90-40BB-8D67-26F3BA0DD956}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TokenAuthSampleApp", "test\TokenAuthSampleApp\TokenAuthSampleApp.csproj", "{494FE268-A827-4943-9E3C-D57FA3098DDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BearerAuthSampleApp", "test\BearerAuthSampleApp\BearerAuthSampleApp.csproj", "{494FE268-A827-4943-9E3C-D57FA3098DDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
