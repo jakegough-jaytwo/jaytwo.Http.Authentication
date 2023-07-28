@@ -19,7 +19,7 @@ public class BasicAuthenticationProvider : AuthenticationProviderBase, IAuthenti
 
     protected internal string Password { get; private set; }
 
-    public override Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request, CancellationToken cancellationToken)
+    public override Task AuthenticateAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var combined = $"{User}:{Password}";
         var bytes = Encoding.UTF8.GetBytes(combined);

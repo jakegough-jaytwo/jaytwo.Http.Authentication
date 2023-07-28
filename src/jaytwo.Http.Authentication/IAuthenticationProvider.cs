@@ -7,5 +7,5 @@ namespace jaytwo.Http.Authentication;
 
 public interface IAuthenticationProvider
 {
-    Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request, CancellationToken cancellationToken);
+    Task AuthenticateAsync(HttpRequestMessage request, CancellationToken cancellationToken);
 }
