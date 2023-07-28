@@ -12,7 +12,7 @@ public class BearerAuthSampleAppWebApplicationFactory
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        var contentRoot = new SlnFileResolver().ResolvePathRelativeToSln("test/TokenAuthSampleApp");
+        var contentRoot = new SlnFileResolver().ResolvePathRelativeToSln("test/BearerAuthSampleApp");
         builder.UseContentRoot(contentRoot);
     }
 }

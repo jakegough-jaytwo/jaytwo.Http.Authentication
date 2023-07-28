@@ -18,7 +18,7 @@ public class BearerAuthSampleAppTests : IClassFixture<AuthenticationTestFixture>
     }
 
     [Fact]
-    public async Task GetHome_ReturnsOkWithoutTokenAuthenticationProvider()
+    public async Task GetHome_ReturnsOkWithoutBearerAuthenticationProvider()
     {
         // Arrange
         using var client = _client;
@@ -35,7 +35,7 @@ public class BearerAuthSampleAppTests : IClassFixture<AuthenticationTestFixture>
     }
 
     [Fact]
-    public async Task GetSecure_ReturnsUnauthorizedWithoutTokenAuth()
+    public async Task GetSecure_ReturnsUnauthorizedWithoutBearerAuth()
     {
         // Arrange
         using var client = _client;
@@ -64,7 +64,7 @@ public class BearerAuthSampleAppTests : IClassFixture<AuthenticationTestFixture>
     }
 
     [Fact]
-    public async Task GetSecure_ReturnsOkWithTokenAuthCredentials()
+    public async Task GetSecure_ReturnsOkWithBearerAuthCredentials()
     {
         // Arrange
         var auth = new BearerAuthenticationProvider("helloworld");

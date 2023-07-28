@@ -60,7 +60,7 @@ public class HttpClientTests
     }
 
     [Fact]
-    public async Task TokenAuth_Works()
+    public async Task BearerAuth_Works()
     {
         // arrange
         var token = "hello";

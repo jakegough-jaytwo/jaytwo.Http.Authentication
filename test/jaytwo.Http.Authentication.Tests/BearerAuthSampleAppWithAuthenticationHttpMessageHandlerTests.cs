@@ -34,7 +34,7 @@ public class BearerAuthSampleAppWithAuthenticationHttpMessageHandlerTests : ICla
     }
 
     [Fact]
-    public async Task GetSecure_ReturnsOkWithTokenAuthCredentials__token_as_string()
+    public async Task GetSecure_ReturnsOkWithBearerAuthCredentials__token_as_string()
     {
         // Arrange
         var auth = new BearerAuthenticationProvider("helloworld");
@@ -52,7 +52,7 @@ public class BearerAuthSampleAppWithAuthenticationHttpMessageHandlerTests : ICla
     }
 
     [Fact]
-    public async Task GetSecure_ReturnsOkWithTokenAuthCredentials__token_as_delegate()
+    public async Task GetSecure_ReturnsOkWithBearerAuthCredentials__token_as_delegate()
     {
         // Arrange
         var auth = new BearerAuthenticationProvider("helloworld");
@@ -70,7 +70,7 @@ public class BearerAuthSampleAppWithAuthenticationHttpMessageHandlerTests : ICla
     }
 
     [Fact]
-    public async Task GetSecure_ReturnsOkWithTokenAuthCredentials__token_from_provider()
+    public async Task GetSecure_ReturnsOkWithBearerAuthCredentials__token_from_provider()
     {
         // Arrange
         var mockTokenProvider = new Mock<IBearerTokenProvider>();

@@ -28,8 +28,8 @@ public class Startup
     {
         services.AddControllers();
 
-        services.AddAuthentication("TokenAuthentication")
-            .AddScheme<AuthenticationSchemeOptions, TokenAuthenticationHandler>("Token", null);
+        services.AddAuthentication("BearerAuthentication")
+            .AddScheme<AuthenticationSchemeOptions, BeareruthenticationHandler>("Token", null);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
