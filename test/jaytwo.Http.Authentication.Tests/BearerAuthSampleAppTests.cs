@@ -8,20 +8,20 @@ using Xunit;
 
 namespace jaytwo.Http.Authentication.Tests;
 
-public class TokenAuthSampleAppTests : IClassFixture<TokenAuthSampleAppWebApplicationFactory>
+public class BearerAuthSampleAppTests : IClassFixture<AuthenticationTestFixture>
 {
-    private readonly TokenAuthSampleAppWebApplicationFactory _fixture;
+    private readonly IHttpClient _client;
 
-    public TokenAuthSampleAppTests(TokenAuthSampleAppWebApplicationFactory fixture)
+    public BearerAuthSampleAppTests(AuthenticationTestFixture fixture)
     {
-        _fixture = fixture;
+        _client = fixture.CreateBearerAuthSampleAppHttpClient();
     }
 
     [Fact]
     public async Task GetHome_ReturnsOkWithoutTokenAuthenticationProvider()
     {
         // Arrange
-        using var client = _fixture.CreateClient();
+        using var client = _client;
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/home", UriKind.Relative));
 
         // Act
@@ -38,7 +38,7 @@ public class TokenAuthSampleAppTests : IClassFixture<TokenAuthSampleAppWebApplic
     public async Task GetSecure_ReturnsUnauthorizedWithoutTokenAuth()
     {
         // Arrange
-        using var client = _fixture.CreateClient();
+        using var client = _client;
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act
@@ -52,11 +52,8 @@ public class TokenAuthSampleAppTests : IClassFixture<TokenAuthSampleAppWebApplic
     public async Task GetSecure_ReturnsUnauthorizedWithIncorrectCredentials()
     {
         // Arrange
-        using var handler = new AuthenticationHttpMessageHandler(
-            new TokenAuthenticationProvider("noway"),
-            _fixture.Server.CreateHandler());
-
-        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        var auth = new BearerAuthenticationProvider("noway");
+        using var client = _client.WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act
@@ -70,11 +67,8 @@ public class TokenAuthSampleAppTests : IClassFixture<TokenAuthSampleAppWebApplic
     public async Task GetSecure_ReturnsOkWithTokenAuthCredentials()
     {
         // Arrange
-        using var handler = new AuthenticationHttpMessageHandler(
-            new TokenAuthenticationProvider("helloworld"),
-            _fixture.Server.CreateHandler());
-
-        using var client = WebApplicationFactoryHelpers.CreateHttpClient(_fixture, handler);
+        var auth = new BearerAuthenticationProvider("helloworld");
+        using var client = _client.WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri("/secure", UriKind.Relative));
 
         // Act

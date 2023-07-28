@@ -27,11 +27,8 @@ public class HttpMessageHandlerTests
         var user = "hello";
         var pass = "world";
 
-        using var handler = new AuthenticationHttpMessageHandler(
-            new BasicAuthenticationProvider(user, pass),
-            new HttpClientHandler());
-
-        using var client = new HttpClient(handler);
+        var auth = new BasicAuthenticationProvider(user, pass);
+        using var client = new HttpClient().Wrap().WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(HttpBinUrl + $"/basic-auth/{user}/{pass}"));
 
         // act
@@ -46,11 +43,8 @@ public class HttpMessageHandlerTests
     {
         // arrange
         var token = "hello";
-        using var handler = new AuthenticationHttpMessageHandler(
-            new TokenAuthenticationProvider(token),
-            new HttpClientHandler());
-
-        using var client = new HttpClient(handler);
+        var auth = new BearerAuthenticationProvider(token);
+        using var client = new HttpClient().Wrap().WithAuthentication(auth);
         using var request = new HttpRequestMessage(HttpMethod.Get, new Uri(HttpBinUrl + "/bearer"));
 
         // act

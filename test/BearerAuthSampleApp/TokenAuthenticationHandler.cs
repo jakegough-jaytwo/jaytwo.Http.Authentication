@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace TokenAuthSampleApp;
+namespace BearerAuthSampleApp;
 
 // loosely based on https://jasonwatmore.com/post/2019/10/21/aspnet-core-3-basic-authentication-tutorial-with-example-api
 public class TokenAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>

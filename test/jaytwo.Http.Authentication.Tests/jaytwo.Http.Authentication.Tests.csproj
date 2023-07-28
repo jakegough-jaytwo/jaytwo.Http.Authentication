@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\jaytwo.Http.Authentication\jaytwo.Http.Authentication.csproj" />
     <ProjectReference Include="..\BasicAuthSampleApp\BasicAuthSampleApp.csproj" />
-    <ProjectReference Include="..\TokenAuthSampleApp\TokenAuthSampleApp.csproj" />
+    <ProjectReference Include="..\BearerAuthSampleApp\BearerAuthSampleApp.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,10 +7,7 @@ namespace jaytwo.Http.Authentication;
 
 public abstract class AuthenticationProviderBase : IAuthenticationProvider
 {
-    public virtual Task AuthenticateAsync(HttpRequestMessage request)
-    {
-        return Task.CompletedTask;
-    }
+    public abstract Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request);
 
     protected void SetRequestAuthenticationHeader(HttpRequestMessage request, string headerValue)
     {

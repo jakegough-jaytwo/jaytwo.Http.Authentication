@@ -6,5 +6,5 @@ namespace jaytwo.Http.Authentication;
 
 public interface IAuthenticationProvider
 {
-    Task AuthenticateAsync(HttpRequestMessage request);
+    Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request);
 }

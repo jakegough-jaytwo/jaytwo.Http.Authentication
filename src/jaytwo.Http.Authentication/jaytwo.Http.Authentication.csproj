@@ -9,6 +9,10 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="jaytwo.Http" Version="0.1.0-*" />
+  </ItemGroup>
+
   <!--
     // https://docs.microsoft.com/en-us/dotnet/standard/frameworks
     // preprocessor symbols for free:
