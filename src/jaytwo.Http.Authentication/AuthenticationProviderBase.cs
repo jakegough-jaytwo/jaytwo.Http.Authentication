@@ -8,7 +8,7 @@ namespace jaytwo.Http.Authentication;
 
 public abstract class AuthenticationProviderBase : IAuthenticationProvider
 {
-    public abstract Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request, CancellationToken cancellationToken);
+    public abstract Task AuthenticateAsync(HttpRequestMessage request, CancellationToken cancellationToken);
 
     protected void SetRequestAuthenticationHeader(HttpRequestMessage request, string headerValue)
     {

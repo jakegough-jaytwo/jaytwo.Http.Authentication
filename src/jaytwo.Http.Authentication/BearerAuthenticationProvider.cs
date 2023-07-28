@@ -29,7 +29,7 @@ public class BearerAuthenticationProvider : AuthenticationProviderBase, IAuthent
 
     protected internal Func<CancellationToken, Task<string>> TokenProvider { get; private set; }
 
-    public override async Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request, CancellationToken cancellationToken)
+    public override async Task AuthenticateAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var token = await TokenProvider.Invoke(cancellationToken);
         SetRequestAuthenticationHeader(request, "Bearer", token);
