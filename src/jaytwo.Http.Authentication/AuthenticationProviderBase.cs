@@ -1,13 +1,14 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace jaytwo.Http.Authentication;
 
 public abstract class AuthenticationProviderBase : IAuthenticationProvider
 {
-    public abstract Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request);
+    public abstract Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request, CancellationToken cancellationToken);
 
     protected void SetRequestAuthenticationHeader(HttpRequestMessage request, string headerValue)
     {

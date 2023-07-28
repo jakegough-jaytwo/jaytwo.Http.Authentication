@@ -20,7 +20,7 @@ public class AuthenticationWrapper : DelegatingHttpClientWrapper, IHttpClient
 
     public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = null, CancellationToken? cancellationToken = null)
     {
-        await AuthenticationProvider.AuthenticateAsync(this, request);
+        await AuthenticationProvider.AuthenticateAsync(this, request, cancellationToken ?? default);
         return await base.SendAsync(request, completionOption, cancellationToken);
     }
 }

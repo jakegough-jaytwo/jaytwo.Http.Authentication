@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace jaytwo.Http.Authentication;
@@ -12,11 +13,11 @@ public class BearerAuthenticationProvider : AuthenticationProviderBase, IAuthent
     }
 
     public BearerAuthenticationProvider(Func<string> tokenDelegate)
-        : this(() => Task.FromResult(tokenDelegate.Invoke()))
+        : this(x => Task.FromResult(tokenDelegate.Invoke()))
     {
     }
 
-    public BearerAuthenticationProvider(Func<Task<string>> tokenProvider)
+    public BearerAuthenticationProvider(Func<CancellationToken, Task<string>> tokenProvider)
     {
         TokenProvider = tokenProvider;
     }
@@ -26,11 +27,11 @@ public class BearerAuthenticationProvider : AuthenticationProviderBase, IAuthent
     {
     }
 
-    protected internal Func<Task<string>> TokenProvider { get; private set; }
+    protected internal Func<CancellationToken, Task<string>> TokenProvider { get; private set; }
 
-    public override async Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request)
+    public override async Task AuthenticateAsync(IHttpClient httpClient, HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var token = await TokenProvider.Invoke();
+        var token = await TokenProvider.Invoke(cancellationToken);
         SetRequestAuthenticationHeader(request, "Bearer", token);
     }
 }

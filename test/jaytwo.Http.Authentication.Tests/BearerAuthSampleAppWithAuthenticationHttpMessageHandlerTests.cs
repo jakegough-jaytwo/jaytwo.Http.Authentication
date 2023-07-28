@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using Xunit;
@@ -74,7 +75,7 @@ public class BearerAuthSampleAppWithAuthenticationHttpMessageHandlerTests : ICla
     {
         // Arrange
         var mockTokenProvider = new Mock<IBearerTokenProvider>();
-        mockTokenProvider.Setup(x => x.GetTokenAsync()).ReturnsAsync("helloworld");
+        mockTokenProvider.Setup(x => x.GetTokenAsync(It.IsAny<CancellationToken>())).ReturnsAsync("helloworld");
 
         var auth = new BearerAuthenticationProvider(mockTokenProvider.Object);
         using var client = _client.WithAuthentication(auth);

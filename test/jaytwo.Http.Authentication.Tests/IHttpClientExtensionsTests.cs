@@ -61,7 +61,7 @@ public class IHttpClientExtensionsTests : IClassFixture<AuthenticationTestFixtur
         // Assert
         var typed = Assert.IsType<AuthenticationWrapper>(wrapped);
         var auth = Assert.IsType<BearerAuthenticationProvider>(typed.AuthenticationProvider);
-        Assert.Equal(token, await auth.TokenProvider.Invoke());
+        Assert.Equal(token, await auth.TokenProvider.Invoke(default));
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class IHttpClientExtensionsTests : IClassFixture<AuthenticationTestFixtur
         // Assert
         var typed = Assert.IsType<AuthenticationWrapper>(wrapped);
         var auth = Assert.IsType<BearerAuthenticationProvider>(typed.AuthenticationProvider);
-        Assert.Equal(token, await auth.TokenProvider.Invoke());
+        Assert.Equal(token, await auth.TokenProvider.Invoke(default));
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class IHttpClientExtensionsTests : IClassFixture<AuthenticationTestFixtur
         var token = "hello";
         var mockHttpClient = new Mock<IHttpClient>();
         var mockTokenProvider = new Mock<IBearerTokenProvider>();
-        mockTokenProvider.Setup(x => x.GetTokenAsync()).ReturnsAsync(token);
+        mockTokenProvider.Setup(x => x.GetTokenAsync(default)).ReturnsAsync(token);
 
         // Act
         var wrapped = mockHttpClient.Object.WithBearerAuthentication(mockTokenProvider.Object);
@@ -95,6 +95,6 @@ public class IHttpClientExtensionsTests : IClassFixture<AuthenticationTestFixtur
         // Assert
         var typed = Assert.IsType<AuthenticationWrapper>(wrapped);
         var auth = Assert.IsType<BearerAuthenticationProvider>(typed.AuthenticationProvider);
-        Assert.Equal(token, await auth.TokenProvider.Invoke());
+        Assert.Equal(token, await auth.TokenProvider.Invoke(default));
     }
 }
