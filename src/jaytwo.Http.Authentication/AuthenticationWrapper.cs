@@ -16,7 +16,7 @@ public class AuthenticationWrapper : DelegatingHttpClientWrapper, IHttpClient
         AuthenticationProvider = authenticationProvider;
     }
 
-    protected internal IAuthenticationProvider AuthenticationProvider { get; private set; }
+    public IAuthenticationProvider AuthenticationProvider { get; private set; }
 
     public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = null, CancellationToken? cancellationToken = null)
     {
