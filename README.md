@@ -1,10 +1,10 @@
 # jaytwo.Http.Authentication
 
 <p align="center">
-  <a href="https://jenkins.jaytwo.com/job/jaytwo.Http.Authentication/job/master/" alt="Build Status (master)">
-    <img src="https://jenkins.jaytwo.com/buildStatus/icon?job=jaytwo.Http.Authentication%2Fmaster&subject=build%20(master)" /></a>
-  <a href="https://jenkins.jaytwo.com/job/jaytwo.Http.Authentication/job/develop/" alt="Build Status (develop)">
-    <img src="https://jenkins.jaytwo.com/buildStatus/icon?job=jaytwo.Http.Authentication%2Fdevelop&subject=build%20(develop)" /></a>
+  <a href="https://jenkins.jaytwo.com/job/github-jakegough-jaytwo/job/jaytwo.Http.Authentication/job/master/" alt="Build Status (master)">
+    <img src="https://jenkins.jaytwo.com/buildStatus/icon?job=github-jakegough-jaytwo%2Fjaytwo.Http.Authentication%2Fmaster&subject=build%20(master)" /></a>
+  <a href="https://jenkins.jaytwo.com/job/github-jakegough-jaytwo/job/jaytwo.Http.Authentication/job/develop/" alt="Build Status (develop)">
+    <img src="https://jenkins.jaytwo.com/buildStatus/icon?job=github-jakegough-jaytwo%2Fjaytwo.Http.Authentication%2Fdevelop&subject=build%20(develop)" /></a>
 </p>
 
 <p align="center">
@@ -24,7 +24,26 @@ PM> Install-Package jaytwo.Http.Authentication
 
 ## Usage
 
-TODO
+This builds on the `IHttpClient` abstraction from the `jaytwo.Http` package.  This is meant for use with the `jaytwo.FluentHttp` package.
+
+It provides a pattern for authentication and includes a few simple HTTP auth providers: 
+* Basic Auth
+* Bearer Auth (aka Token Auth)
+
+Additional auth implementions built on this package:
+* [jaytwo.Http.Authentication.Digest](https://github.com/jakegough-jaytwo/jaytwo.Http.Authentication.Digest)
+* [jaytwo.Http.Authentication.OpenIdConnect](https://github.com/jakegough-jaytwo/jaytwo.Http.Authentication.OpenIdConnect)
+
+
+```csharp
+// basic auth
+var httpClient = new HttpClient().Wrap().WithBasicAuthentication("user", "pass");
+```
+
+```csharp
+// bearer auth
+var httpClient = new HttpClient().Wrap().WithBearerAuthentication("mytoken");
+```
 
 ---
 
