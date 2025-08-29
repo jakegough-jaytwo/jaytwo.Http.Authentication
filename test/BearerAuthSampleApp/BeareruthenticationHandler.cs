@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -15,6 +12,7 @@ namespace BearerAuthSampleApp;
 // loosely based on https://jasonwatmore.com/post/2019/10/21/aspnet-core-3-basic-authentication-tutorial-with-example-api
 public class BeareruthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
+    [Obsolete]
     public BeareruthenticationHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
@@ -32,13 +30,15 @@ public class BeareruthenticationHandler : AuthenticationHandler<AuthenticationSc
     protected AuthenticateResult HandleAuthenticate()
     {
         if (!Request.Headers.ContainsKey("Authorization"))
+        {
             return AuthenticateResult.Fail("Missing Authorization Header");
+        }
 
         string token;
         try
         {
-            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-            token = authHeader.Parameter;
+            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]!);
+            token = authHeader.Parameter!;
 
             if (token != "helloworld")
             {
@@ -51,7 +51,9 @@ public class BeareruthenticationHandler : AuthenticationHandler<AuthenticationSc
         }
 
         if (string.IsNullOrEmpty(token))
+        {
             return AuthenticateResult.Fail("Invalid Username or Password");
+        }
 
         var claims = new Claim[] { };
         var identity = new ClaimsIdentity(claims, Scheme.Name);

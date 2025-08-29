@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
@@ -15,6 +13,7 @@ namespace BasicAuthSampleApp;
 // based on https://jasonwatmore.com/post/2019/10/21/aspnet-core-3-basic-authentication-tutorial-with-example-api
 public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
+    [Obsolete]
     public BasicAuthenticationHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
@@ -32,13 +31,15 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
     protected AuthenticateResult HandleAuthenticate()
     {
         if (!Request.Headers.ContainsKey("Authorization"))
+        {
             return AuthenticateResult.Fail("Missing Authorization Header");
+        }
 
         string username;
         try
         {
-            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-            var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
+            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]!);
+            var credentialBytes = Convert.FromBase64String(authHeader.Parameter!);
             var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
             username = credentials[0];
             var password = credentials[1];
@@ -54,11 +55,15 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
         }
 
         if (string.IsNullOrEmpty(username))
+        {
             return AuthenticateResult.Fail("Invalid Username or Password");
+        }
 
-        var claims = new[] {
+        var claims = new[]
+        {
             new Claim(ClaimTypes.Name, username),
         };
+
         var identity = new ClaimsIdentity(claims, Scheme.Name);
         var principal = new ClaimsPrincipal(identity);
         var ticket = new AuthenticationTicket(principal, Scheme.Name);
